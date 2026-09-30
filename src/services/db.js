@@ -26,16 +26,7 @@ function randomStr(len = 5) {
 
 // Initial seed data
 const initialData = {
-  admins: [
-    {
-      id: 1,
-      name: 'Super Admin',
-      email: 'admin@weddingcatalog.com',
-      password: bcrypt.hashSync('password123', 10),
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }
-  ],
+  admins: [],
   categories: [
     { id: 1, name: 'Rustic', slug: 'rustic', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
     { id: 2, name: 'Modern', slug: 'modern', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
@@ -305,11 +296,33 @@ export class DatabaseService {
   }
 
   static async getAdminByEmail(email) {
+    if (!email) return null;
+    const envEmail = process.env.ADMIN_EMAIL || 'admin@weddingcatalog.com';
+    const envPassword = process.env.ADMIN_PASSWORD;
+    const envHash = process.env.ADMIN_PASSWORD_HASH;
+
+    if (email.toLowerCase() === envEmail.toLowerCase() && (envPassword || envHash)) {
+      const password = envHash || bcrypt.hashSync(envPassword, 10);
+      return {
+        id: 1,
+        name: process.env.ADMIN_NAME || 'Super Admin',
+        email: envEmail,
+        password
+      };
+    }
+
     const admins = await this.getTableRows('admins');
-    return admins.find((a) => a.email.toLowerCase() === email.toLowerCase()) || null;
+    return admins.find((a) => a.email && a.email.toLowerCase() === email.toLowerCase()) || null;
   }
 
   static async getAdminById(id) {
+    if (Number(id) === 1 && (process.env.ADMIN_PASSWORD || process.env.ADMIN_PASSWORD_HASH)) {
+      return {
+        id: 1,
+        name: process.env.ADMIN_NAME || 'Super Admin',
+        email: process.env.ADMIN_EMAIL || 'admin@weddingcatalog.com'
+      };
+    }
     const admins = await this.getTableRows('admins');
     return admins.find((a) => Number(a.id) === Number(id)) || null;
   }

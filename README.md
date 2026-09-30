@@ -60,9 +60,9 @@ Backend REST API untuk Wedding Catalog yang telah dimigrasi dari Laravel menjadi
 2. Konfigurasi file `.env`:
    ```env
    DRIVEMYADMIN_URL=https://drivemyadmin.ardana629.my.id
-   DRIVEMYADMIN_API_KEY=drive_admin_secret_key_2026
-   DRIVEMYADMIN_DB_ID=1mjQnrbaY--W-1YG1pmWEefgNFoVXvSOC
-   JWT_SECRET=wedding_catalog_secret_token_key_2026
+   DRIVEMYADMIN_API_KEY=your_drivemyadmin_api_key_here
+   DRIVEMYADMIN_DB_ID=your_drivemyadmin_database_id_here
+   JWT_SECRET=your_jwt_secret_token_min_32_characters
    PORT=8000
    ```
 
@@ -85,8 +85,8 @@ Backend REST API untuk Wedding Catalog yang telah dimigrasi dari Laravel menjadi
 2. Buka dashboard [Vercel](https://vercel.com/) dan import repository.
 3. Masukkan Environment Variables di Vercel:
    - `DRIVEMYADMIN_URL`: `https://drivemyadmin.ardana629.my.id`
-   - `DRIVEMYADMIN_API_KEY`: `drive_admin_secret_key_2026`
-   - `DRIVEMYADMIN_DB_ID`: `1mjQnrbaY--W-1YG1pmWEefgNFoVXvSOC`
-   - `JWT_SECRET`: `wedding_catalog_secret_token_key_2026`
+   - `DRIVEMYADMIN_API_KEY`: *(API Key Anda dari DriveMyAdmin)*
+   - `DRIVEMYADMIN_DB_ID`: *(Database ID Anda dari DriveMyAdmin)*
+   - `JWT_SECRET`: *(String rahasia JWT unik, minimal 32 karakter)*
 4. Klik **Deploy**!
 5. Pada project frontend Next.js (`wedding-catalog-web`), cukup ubah `NEXT_PUBLIC_API_URL` ke domain Vercel yang diberikan (contoh: `https://wedding-catalog-api.vercel.app`).

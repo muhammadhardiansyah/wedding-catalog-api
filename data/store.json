@@ -1,14 +1,5 @@
 {
-  "admins": [
-    {
-      "id": 1,
-      "name": "Super Admin",
-      "email": "admin@weddingcatalog.com",
-      "password": "$2y$12$J1mIlh5exOuh0V3vOsnxnutmIcl2wvrlpu/zQs08ruKZDkAAWLqky",
-      "created_at": "2026-04-12 12:23:50",
-      "updated_at": "2026-04-12 12:23:50"
-    }
-  ],
+  "admins": [],
   "categories": [
     {
       "id": 1,
@@ -88,9 +79,9 @@
       "is_active": true,
       "price_type": "premium",
       "price": 1000000,
-      "view_count": 10,
+      "view_count": 11,
       "created_at": "2026-04-12 16:45:54",
-      "updated_at": "2026-09-30T03:05:14.028Z"
+      "updated_at": "2026-09-30T03:32:58.178Z"
     },
     {
       "id": 3,

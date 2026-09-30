@@ -11,12 +11,12 @@ export class DriveMyAdminClient {
     this.apiKey =
       config.apiKey ||
       process.env.DRIVEMYADMIN_API_KEY ||
-      'drive_admin_secret_key_2026';
+      '';
 
     this.dbId =
       config.dbId ||
       process.env.DRIVEMYADMIN_DB_ID ||
-      '1mjQnrbaY--W-1YG1pmWEefgNFoVXvSOC';
+      '';
 
     this._tableCache = null;
   }

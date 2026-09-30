@@ -63,8 +63,10 @@ app.use((req, res) => {
 // Error handler
 app.use((err, req, res, next) => {
   console.error('[API Error]:', err);
-  res.status(err.status || 500).json({
-    message: err.message || 'Internal Server Error'
+  const status = err.status || 500;
+  const isProd = process.env.NODE_ENV === 'production';
+  res.status(status).json({
+    message: isProd && status === 500 ? 'Internal Server Error' : (err.message || 'Internal Server Error')
   });
 });
 

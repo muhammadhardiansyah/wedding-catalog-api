@@ -1,7 +1,11 @@
 import jwt from 'jsonwebtoken';
 import DatabaseService from '../services/db.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'wedding_catalog_secret_token_key_2026';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET && process.env.NODE_ENV === 'production') {
+  throw new Error('FATAL: JWT_SECRET environment variable is missing.');
+}
+const SECRET_KEY = JWT_SECRET || 'wedding_catalog_dev_secret_key_change_in_production';
 
 export function generateToken(admin) {
   return jwt.sign(
@@ -10,7 +14,7 @@ export function generateToken(admin) {
       email: admin.email,
       name: admin.name
     },
-    JWT_SECRET,
+    SECRET_KEY,
     { expiresIn: '30d' }
   );
 }
@@ -23,7 +27,7 @@ export async function authMiddleware(req, res, next) {
 
   const token = authHeader.split(' ')[1];
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, SECRET_KEY);
     const admin = await DatabaseService.getAdminById(decoded.id);
     if (!admin) {
       return res.status(401).json({ message: 'Unauthenticated.' });
