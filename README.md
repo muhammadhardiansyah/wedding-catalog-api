@@ -1,59 +1,92 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Wedding Catalog API (Vercel Serverless + DriveMyAdmin)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Backend REST API untuk Wedding Catalog yang telah dimigrasi dari Laravel menjadi **Node.js Express Serverless**, dioptimalkan untuk hosting gratis di **Vercel** dengan database dan penyimpanan cloud menggunakan **DriveMyAdmin**.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Fitur Utama
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Hosting di Vercel (100% Gratis & Serverless)**:
+  - Dikonfigurasi dengan `vercel.json` dan handler serverless `api/index.js`.
+  - Zero-maintenance, instant scaling.
+- **Database & Object Storage via DriveMyAdmin**:
+  - Terintegrasi dengan SDK `lib/drivemyadmin.ts` / `src/lib/drivemyadmin.js`.
+  - Terkoneksi ke database `wedding_catalog`.
+  - Upload file thumbnail otomatis ke DriveMyAdmin Object Storage CDN.
+- **100% Kompatibel dengan Frontend (`wedding-catalog-web`)**:
+  - Response format, status code, error payload, dan pagination persis sama dengan Laravel API.
+  - Autentikasi Admin via Bearer JWT token (kompatibel penuh dengan `auth:sanctum`).
+  - Hashing password menggunakan `bcryptjs` (kompatibel penuh dengan hash Laravel).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Endpoint API
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### Public
+- `GET /api/designs` - Katalog desain (filter: `category`, `tag`, `search`, `price_type`, `featured`, pagination)
+- `GET /api/designs/:slug` - Detail desain berdasarkan slug
+- `POST /api/designs/:slug/view` - Increment jumlah view desain
+- `GET /api/categories` - Daftar kategori beserta `designs_count`
+- `GET /api/tags` - Daftar tag beserta `designs_count`
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Auth Admin
+- `POST /api/admin/login` - Login admin (`email`, `password`) -> return `{ admin, token }`
+- `POST /api/admin/logout` - Logout (membutuhkan Bearer token)
+- `GET /api/admin/me` - Cek profil admin login
 
-## Laravel Sponsors
+### CRUD Admin (Membutuhkan Bearer Token)
+- `GET /api/admin/designs` - Daftar semua desain untuk admin (termasuk inactive)
+- `GET /api/admin/designs/:id` - Detail desain berdasarkan ID
+- `POST /api/admin/designs` - Tambah desain baru
+- `PUT /api/admin/designs/:id` - Update data desain
+- `DELETE /api/admin/designs/:id` - Hapus desain
+- `POST /api/admin/categories` - Tambah kategori baru
+- `PUT /api/admin/categories/:id` - Update kategori
+- `DELETE /api/admin/categories/:id` - Hapus kategori
+- `POST /api/admin/tags` - Tambah tag baru
+- `PUT /api/admin/tags/:id` - Update tag
+- `DELETE /api/admin/tags/:id` - Hapus tag
+- `POST /api/admin/upload` - Upload thumbnail gambar ke DriveMyAdmin Object Storage
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## Menjalankan Secara Lokal
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+1. Pastikan dependensi telah terinstal:
+   ```bash
+   npm install
+   ```
 
-## Contributing
+2. Konfigurasi file `.env`:
+   ```env
+   DRIVEMYADMIN_URL=https://drivemyadmin.ardana629.my.id
+   DRIVEMYADMIN_API_KEY=drive_admin_secret_key_2026
+   DRIVEMYADMIN_DB_ID=1mjQnrbaY--W-1YG1pmWEefgNFoVXvSOC
+   JWT_SECRET=wedding_catalog_secret_token_key_2026
+   PORT=8000
+   ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+3. Jalankan migrasi / seed awal:
+   ```bash
+   npm run seed
+   ```
 
-## Code of Conduct
+4. Jalankan server lokal:
+   ```bash
+   npm run dev
+   ```
+   Server akan berjalan di `http://127.0.0.1:8000`. Frontend Next.js `wedding-catalog-web` dapat langsung terhubung tanpa mengubah konfigurasi apa pun.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## Deploy ke Vercel
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+1. Push repository ini ke GitHub.
+2. Buka dashboard [Vercel](https://vercel.com/) dan import repository.
+3. Masukkan Environment Variables di Vercel:
+   - `DRIVEMYADMIN_URL`: `https://drivemyadmin.ardana629.my.id`
+   - `DRIVEMYADMIN_API_KEY`: `drive_admin_secret_key_2026`
+   - `DRIVEMYADMIN_DB_ID`: `1mjQnrbaY--W-1YG1pmWEefgNFoVXvSOC`
+   - `JWT_SECRET`: `wedding_catalog_secret_token_key_2026`
+4. Klik **Deploy**!
+5. Pada project frontend Next.js (`wedding-catalog-web`), cukup ubah `NEXT_PUBLIC_API_URL` ke domain Vercel yang diberikan (contoh: `https://wedding-catalog-api.vercel.app`).
